@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Aviator Predictor Helper</title>
+    <style>
+        #container {
+            position: relative;
+            width: 100%;
+            height: 100vh;
+        }
+        #videoPreview {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+        }
+        #selectionRect {
+            position: absolute;
+            border: 2px dashed red;
+            display: none;
+        }
+        #controls {
+            position: fixed;
+            top: 10px;
+            left: 10px;
+            background: rgba(0,0,0,0.7);
+            color: white;
+            padding: 10px;
+            border-radius: 5px;
+        }
+        #prediction {
+            margin-top: 10px;
+            font-size: 18px;
+            font-weight: bold;
+        }
+        button:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+    </style>
+</head>
+<body>
+    <div id="container">
+        <video id="videoPreview" autoplay playsinline></video>
+        <div id="selectionRect"></div>
+        <div id="controls">
+            <button onclick="startSelection()" id="selectBtn">Select Region</button>
+            <button onclick="takeScreenshot()" id="captureBtn" disabled>Take Screenshot</button>
+            <button onclick="startPrediction()" id="predictBtn" disabled>Start Prediction</button>
+            <div id="prediction">No prediction yet</div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/tesseract.js@2.1.5/dist/tesseract.min.js"></script>
+    <script>
+        let video, stream, selectionRect, isSelecting = false;
+        let startX, startY, selWidth, selHeight;
+        let regionSelected = false;
+        let predictionInterval;
+
+        async function startCapture() {
+            try {
+                stream = await navigator.mediaDevices.getDisplayMedia({
+                    video: { cursor: "always" },
+                    audio: false
+                });
+                video = document.getElementById('videoPreview');
+                video.srcObject = stream;
+                video.play();
+                return true;
+            } catch (err) {
+                console.error("Error: " + err);
+                alert("Failed to start capture. Please check permissions.");
+                return false;
+            }
+        }
+
+        function startSelection() {
+            if (!video) {
+                alert("Please allow screen capture first!");
+                return;
+            }
+
+            selectionRect = document.getElementById('selectionRect');
+            isSelecting = true;
+            selectionRect.style.display = 'block';
+
+            document.addEventListener('mousedown', startSelect);
+            document.addEventListener('mousemove', duringSelect);
+            document.addEventListener('mouseup', endSelect);
+        }
+
+        function startSelect(e) {
+            startX = e.clientX;
+            startY = e.clientY;
+            selectionRect.style.left = startX + 'px';
+            selectionRect.style.top = startY + 'px';
+            selectionRect.style.width = '0px';
+            selectionRect.style.height = '0px';
+        }
+
+        function duringSelect(e) {
+            if (!isSelecting) return;
+
+            selWidth = e.clientX - startX;
+            selHeight = e.clientY - startY;
+
+            selectionRect.style.width = Math.abs(selWidth) + 'px';
+            selectionRect.style.height = Math.abs(selHeight) + 'px';
+            selectionRect.style.left = (selWidth < 0 ? e.clientX : startX) + 'px';
+            selectionRect.style.top = (selHeight < 0 ? e.clientY : startY) + 'px';
+        }
+
+        function endSelect() {
+            isSelecting = false;
+            document.removeEventListener('mousedown', startSelect);
+            document.removeEventListener('mousemove', duringSelect);
+            document.removeEventListener('mouseup', endSelect);
+
+            if (selWidth === 0 || selHeight === 0) {
+                selectionRect.style.display = 'none';
+                regionSelected = false;
+                document.getElementById('captureBtn').disabled = true;
+                document.getElementById('predictBtn').disabled = true;
+                return;
+            }
+
+            selectionRect.style.display = 'block';
+            regionSelected = true;
+            document.getElementById('captureBtn').disabled = false;
+            document.getElementById('predictBtn').disabled = false;
+        }
+
+        async function takeScreenshot() {
+            if (!regionSelected) {
+                alert("Please select a region first!");
+                return;
+            }
+
+            const canvas = await captureRegion();
+            const number = await extractNumber(canvas);
+
+            if (number) {
+                document.getElementById('prediction').textContent = `Last Detected: ${number.toFixed(2)}x`;
+                alert(`Screenshot taken! Detected multiplier: ${number.toFixed(2)}x`);
+            } else {
+                document.getElementById('prediction').textContent = 'Failed to detect a number.';
+                alert("No valid number detected in the selected region.");
+            }
+        }
+
+        async function captureRegion() {
+            const canvas = document.createElement('canvas');
+            canvas.width = Math.abs(selWidth);
+            canvas.height = Math.abs(selHeight);
+            const ctx = canvas.getContext('2d');
+            const x = parseInt(selectionRect.style.left);
+            const y = parseInt(selectionRect.style.top);
+
+            ctx.drawImage(video, x, y, Math.abs(selWidth), Math.abs(selHeight), 0, 0, Math.abs(selWidth), Math.abs(selHeight));
+
+            return canvas;
+        }
+
+        async function extractNumber(canvas) {
+            try {
+                const { data: { text } } = await Tesseract.recognize(canvas, 'eng', { logger: m => console.log(m) });
+                const number = text.match(/\d+\.\d+|\d+/);
+                return number ? parseFloat(number[0]) : null;
+            } catch (error) {
+                console.error('OCR Error:', error);
+                return null;
+            }
+        }
+
+        let previousNumbers = [];
+
+        function predictNextMultiplier(current) {
+            if (!current) return null;
+
+            previousNumbers.push(current);
+            if (previousNumbers.length > 20) previousNumbers.shift();
+
+            let average = previousNumbers.reduce((a, b) => a + b, 0) / previousNumbers.length;
+            let variance = previousNumbers.reduce((a, b) => a + Math.pow(b - average, 2), 0) / previousNumbers.length;
+            let stdDev = Math.sqrt(variance);
+
+            let prediction = average + (Math.random() * 2 - 1) * stdDev;
+            return Math.max(1.0, prediction.toFixed(2));
+        }
+
+        async function startPrediction() {
+            if (!regionSelected) {
+                alert("Please select and capture a region first!");
+                return;
+            }
+
+            if (predictionInterval) {
+                clearInterval(predictionInterval);
+                predictionInterval = null;
+                document.getElementById('predictBtn').textContent = 'Start Prediction';
+                return;
+            }
+
+            document.getElementById('predictBtn').textContent = 'Stop Prediction';
+            predictionInterval = setInterval(async () => {
+                const canvas = await captureRegion();
+                const number = await extractNumber(canvas);
+                if (number) {
+                    const prediction = predictNextMultiplier(number);
+                    document.getElementById('prediction').textContent = `Last: ${number.toFixed(2)}x | Predicted Next: ${prediction}x`;
+                    if (prediction < 1.5) {
+                        document.getElementById('prediction').style.color = 'red';
+                    } else {
+                        document.getElementById('prediction').style.color = 'green';
+                    }
+                }
+            }, 2000); // Check every 2 seconds
+        }
+
+        // Initialize
+        startCapture().then(success => {
+            if (!success) {
+                alert("Failed to start capture. Please check permissions.");
+            }
+        });
+    </script>
+</body>
+</html>

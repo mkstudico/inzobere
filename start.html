@@ -1,0 +1,596 @@
+<!DOCTYPE html>
+<html lang="rw">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Inzobere AI - Kwinjira / Kwiyandikisha</title>
+    <!-- Favicon -->
+    <link rel="icon" type="image/png" href="https://i.ibb.co/S4gjrG5F/Untitled-design-removebg-preview-1.png">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Ubuntu:wght@300;400;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Ubuntu', sans-serif;
+            margin: 0;
+            padding: 0;
+            background: #f5f5f5;
+            transition: all 0.3s ease;
+        }
+
+        /* Navbar */
+        .navbar {
+            background: #FFFFFF;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            padding: 10px 0;
+            transition: all 0.3s ease;
+        }
+        .navbar-brand img {
+            height: 48px;
+            transition: transform 0.3s ease;
+        }
+        .navbar-brand .logotext {
+            font-size: 18px;
+            font-weight: 700;
+            color: #000;
+            margin-left: 10px;
+            transition: color 0.3s ease;
+        }
+        .nav-link {
+            color: #666 !important;
+            font-size: 16px;
+            margin: 0 15px;
+            text-transform: uppercase;
+            transition: color 0.3s ease;
+        }
+        .nav-link.active, .nav-link:hover {
+            color: #005260 !important;
+        }
+        .nav-item.dropdown .nav-link {
+            color: #666 !important;
+        }
+        .nav-item .gov_link {
+            color: #005260 !important;
+        }
+
+        /* Auth Section */
+        #section_auth {
+            padding: 60px 0;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: opacity 0.5s ease;
+        }
+        .auth-container {
+            background: #FFFFFF;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            border-radius: 8px;
+            padding: 32px;
+            width: 100%;
+            max-width: 500px;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        .auth-container:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        }
+        .auth-tabs {
+            margin-bottom: 24px;
+        }
+        .auth-tab {
+            cursor: pointer;
+            padding: 10px 20px;
+            border-bottom: 2px solid transparent;
+            color: #666;
+            font-weight: 700;
+            text-transform: uppercase;
+            transition: all 0.3s ease;
+        }
+        .auth-tab:hover, .auth-tab.active {
+            border-bottom: 2px solid #005260;
+            color: #005260;
+        }
+        .form-group {
+            margin-bottom: 20px;
+        }
+        .form-control, select.form-control {
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            padding: 10px;
+            font-size: 16px;
+            transition: border-color 0.3s ease, box-shadow 0.3s ease;
+        }
+        .form-control:focus, select.form-control:focus {
+            border-color: #005260;
+            box-shadow: 0 0 5px rgba(0, 82, 96, 0.5);
+        }
+        .btn-auth {
+            background: #005260;
+            color: #FFFFFF;
+            border: none;
+            padding: 12px 20px;
+            font-size: 16px;
+            text-transform: uppercase;
+            width: 100%;
+            transition: background 0.3s ease, transform 0.3s ease;
+        }
+        .btn-auth:hover {
+            background: #003d4a;
+            transform: scale(1.05);
+        }
+        .business-fields {
+            display: none;
+            margin-top: 15px;
+            transition: opacity 0.3s ease;
+        }
+        .loading {
+            display: none;
+            text-align: center;
+            margin: 20px 0;
+        }
+        .loading-spinner {
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid #005260;
+            border-radius: 50%;
+            width: 30px;
+            height: 30px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto;
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* Success Message */
+        #successMessage, #loginSuccessMessage {
+            display: none;
+            text-align: center;
+            margin-top: 20px;
+            opacity: 0;
+            transition: opacity 0.5s ease;
+        }
+        #successMessage.show, #loginSuccessMessage.show {
+            display: block;
+            opacity: 1;
+        }
+
+        /* Glowing Button */
+        .glowing-button {
+            display: none;
+            width: 100px;
+            height: 100px;
+            background: #005260;
+            border-radius: 50%;
+            border: 2px solid transparent;
+            cursor: pointer;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            box-shadow: 0 0 15px #00FFFF, 0 0 30px #00FFFF;
+            animation: glow 1.5s ease-in-out infinite alternate;
+            transition: all 0.3s ease;
+            z-index: 1000;
+        }
+        .glowing-button:hover {
+            transform: translate(-50%, -50%) scale(1.1);
+            box-shadow: 0 0 20px #00FFFF, 0 0 40px #00FFFF;
+        }
+        @keyframes glow {
+            from { box-shadow: 0 0 5px #00FFFF, 0 0 10px #00FFFF; }
+            to { box-shadow: 0 0 15px #00FFFF, 0 0 30px #00FFFF; }
+        }
+
+        /* Hide auth when logged in */
+        .logged-in .auth-container {
+            display: none;
+        }
+
+        /* Footer */
+        #section_footer {
+            background: #005260;
+            color: #FFFFFF;
+            padding: 32px 0;
+            border-radius: 0;
+            transition: background 0.3s ease;
+        }
+        #section_footer a {
+            color: #FFFFFF;
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+        #section_footer a:hover {
+            text-decoration: underline;
+            color: #00FFFF;
+        }
+        .footer-left {
+            text-align: left;
+        }
+        .footer-right {
+            text-align: right;
+        }
+    </style>
+</head>
+<body>
+    <!-- Navbar -->
+    <nav class="navbar sticky-top navbar-expand-lg">
+        <div class="container">
+            <a href="index.html" class="navbar-brand">
+                <img src="https://i.ibb.co/S4gjrG5F/Untitled-design-removebg-preview-1.png" alt="Inzobere AI Logo">
+            </a>
+            <a href="index.html" class="navbar-brand logotext">INZOBERE AI</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                <ul class="navbar-nav mx-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="/">Ahabanza</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/about">Ibyerekeye</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/contact">Twandikire</a>
+                    </li>
+                </ul>
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown">
+                            <span class="lang-text">Kinyarwanda</span>
+                        </a>
+                        <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+                            <li><a class="dropdown-item" href="#" onclick="changeLanguage('rw')">Kinyarwanda</a></li>
+                            <li><a class="dropdown-item" href="#" onclick="changeLanguage('en')">English</a></li>
+                        </ul>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link txt_black">|</a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="https://wa.me/+250788123456" target="_blank" class="nav-link gov_link">WhatsApp</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Auth Section -->
+    <div class="container-fluid" id="section_auth">
+        <div class="container">
+            <div class="auth-container">
+                <h2 class="txt_title text-center mb-4">Kwinjira / Kwiyandikisha</h2>
+                <div class="auth-tabs">
+                    <div class="d-flex justify-content-around">
+                        <div class="auth-tab" onclick="showTab('login')">Kwinjira</div>
+                        <div class="auth-tab active" onclick="showTab('signup')">Kwiyandikisha</div>
+                    </div>
+                </div>
+
+                <!-- Login Form -->
+                <div id="loginForm" class="auth-form" style="display: none;">
+                    <form id="loginFormData" onsubmit="handleLogin(event)">
+                        <div class="form-group">
+                            <label for="loginEmail">Imeyili</label>
+                            <input type="email" class="form-control" id="loginEmail" placeholder="Shyiramo imeyili yawe" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="loginPassword">Ijambo ry'ibanga</label>
+                            <input type="password" class="form-control" id="loginPassword" placeholder="Shyiramo ijambo ry'ibanga" required>
+                        </div>
+                        <div class="loading" id="loginLoading">
+                            <div class="loading-spinner"></div>
+                            <p class="mt-2">Murabeho... twiyandikisha...</p>
+                        </div>
+                        <button type="submit" class="btn btn-auth">Kwinjira</button>
+                        <p class="text-center mt-3"><a href="#" class="forgot-password">Wibagirwa ijambo ry'ibanga?</a></p>
+                        <div id="loginSuccessMessage" class="mt-4"></div>
+                    </form>
+                </div>
+
+                <!-- Sign Up Form -->
+                <div id="signupForm" class="auth-form">
+                    <form id="signupFormData" onsubmit="handleSignup(event)">
+                        <div class="form-group">
+                            <label for="signupName">Izina</label>
+                            <input type="text" class="form-control" id="signupName" placeholder="Shyiramo izina ryawe" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="signupEmail">Imeyili</label>
+                            <input type="email" class="form-control" id="signupEmail" placeholder="Shyiramo imeyili yawe" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="signupPassword">Ijambo ry'ibanga</label>
+                            <input type="password" class="form-control" id="signupPassword" placeholder="Shyiramo ijambo ry'ibanga" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="confirmPassword">Emeza ijambo ry'ibanga</label>
+                            <input type="password" class="form-control" id="confirmPassword" placeholder="Emeza ijambo ry'ibanga" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="career">Umwuga (Ubucuruzi/ Ubuhinzi)</label>
+                            <select class="form-control" id="career" onchange="toggleBusinessFields()" required>
+                                <option value="">Hitamo</option>
+                                <option value="business">Ubucuruzi</option>
+                                <option value="farming">Ubuhinzi</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="address">Aderesi</label>
+                            <input type="text" class="form-control" id="address" placeholder="Shyiramo aderesi yawe" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="country">Igihugu</label>
+                            <select class="form-control" id="country" required>
+                                <option value="">Hitamo igihugu</option>
+                                <option value="Rwanda">Rwanda</option>
+                                <option value="Uganda">Uganda</option>
+                                <option value="Kenya">Kenya</option>
+                                <option value="South Africa">South Africa</option>
+                                <option value="Nigeria">Nigeria</option>
+                                <option value="Algeria">Algeria</option>
+                                <option value="Ghana">Ghana</option>
+                                <option value="Burundi">Burundi</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="region">Intara</label>
+                            <input type="text" class="form-control" id="region" placeholder="Shyiramo intara" required>
+                        </div>
+                        <div class="form-group business-fields" id="businessNameField">
+                            <label for="businessName">Izina ry'ubucuruzi</label>
+                            <input type="text" class="form-control" id="businessName" placeholder="Shyiramo izina ry'ubucuruzi">
+                        </div>
+                        <div class="loading" id="loading">
+                            <div class="loading-spinner"></div>
+                            <p class="mt-2">Murabeho... twiyandikisha...</p>
+                        </div>
+                        <button type="submit" class="btn btn-auth">Iyandikishe</button>
+                        <div id="successMessage" class="mt-4"></div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Glowing Button for Chat -->
+    <div id="chatButton" class="glowing-button" title="KANDA HANO"><p style="color: #00ff1a;">CLICK HERE</p></div>
+
+    <!-- Footer -->
+    <div class="container-fluid" id="section_footer">
+        <div class="container">
+            <div class="row align-items-center">
+                <div class="col-12 col-md-6 footer-left">
+                    <p class="txt_title txt_white fnt_black mabo32">Twandikire</p>
+                    <p class="txt_content txt_white">
+                        <i class="fas fa-phone mr-3"></i>
+                        <a href="tel:+250795065789">+250 795065789</a>
+                    </p>
+                    <p class="txt_content txt_white">
+                        <i class="fas fa-envelope-open mr-3"></i>
+                        <a href="mailto:mkbertrand123@gmail.com">mkbertrand123@gmail.com</a>
+                    </p>
+                </div>
+                <div class="col-12 col-md-6 footer-right">
+                    <!-- Placeholder for ad or additional links -->
+                </div>
+            </div>
+            <hr>
+            <p class="txt_info txt_white text-center">© 2025 Inzobere AI. Uburenganzira bwose burabitswe.</p>
+        </div>
+    </div>
+
+    <!-- Firebase Initialization (Module Script) -->
+    <script type="module">
+        // Import Firebase SDK modules
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.0/firebase-app.js";
+        import { getAnalytics } from "https://www.gstatic.com/firebasejs/11.6.0/firebase-analytics.js";
+        import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/11.6.0/firebase-auth.js";
+        import { getFirestore, doc, setDoc } from "https://www.gstatic.com/firebasejs/11.6.0/firebase-firestore.js";
+
+        // Firebase configuration
+        const firebaseConfig = {
+            apiKey: "AIzaSyAWGE-qyjoj2wfFJt-BaRYWw8HtFjdtFpw",
+            authDomain: "rw-ai-6cc70.firebaseapp.com",
+            projectId: "rw-ai-6cc70",
+            storageBucket: "rw-ai-6cc70.appspot.com",
+            messagingSenderId: "247002149954",
+            appId: "1:247002149954:web:d6396a8320e95f0cc869db",
+            measurementId: "G-6VBFXDESQ7"
+        };
+
+        try {
+            // Initialize Firebase
+            const app = initializeApp(firebaseConfig);
+            const analytics = getAnalytics(app);
+            const auth = getAuth(app);
+            const db = getFirestore(app);
+
+            // Export to global scope for non-module script
+            window.firebase = {
+                app: app,
+                auth: auth,
+                db: db,
+                createUserWithEmailAndPassword: createUserWithEmailAndPassword,
+                signInWithEmailAndPassword: signInWithEmailAndPassword,
+                setDoc: setDoc,
+                doc: doc
+            };
+
+            console.log("Firebase initialized successfully");
+        } catch (error) {
+            console.error("Failed to initialize Firebase:", error);
+            alert("Firebase SDK failed to load. Please check your network or try again later.");
+        }
+    </script>
+
+    <!-- Application Logic (Non-Module Script) -->
+    <script>
+        // Check if Firebase is initialized
+        document.addEventListener('DOMContentLoaded', function() {
+            // Wait for Firebase to initialize
+            const checkFirebase = setInterval(function() {
+                if (window.firebase && window.firebase.auth && window.firebase.db) {
+                    clearInterval(checkFirebase);
+                    initApp();
+                }
+            }, 100);
+        });
+
+        function initApp() {
+            // Extract Firebase functions for convenience
+            const { auth, db, createUserWithEmailAndPassword, signInWithEmailAndPassword, setDoc, doc } = window.firebase;
+
+            // Tab Switching
+            function showTab(tab) {
+                if (tab === 'login') {
+                    document.getElementById('loginForm').style.display = 'block';
+                    document.getElementById('signupForm').style.display = 'none';
+                    document.querySelectorAll('.auth-tab')[0].classList.add('active');
+                    document.querySelectorAll('.auth-tab')[1].classList.remove('active');
+                } else {
+                    document.getElementById('loginForm').style.display = 'none';
+                    document.getElementById('signupForm').style.display = 'block';
+                    document.querySelectorAll('.auth-tab')[0].classList.remove('active');
+                    document.querySelectorAll('.auth-tab')[1].classList.add('active');
+                }
+            }
+
+            // Toggle Business Name Field
+            function toggleBusinessFields() {
+                const career = document.getElementById('career').value;
+                const businessField = document.getElementById('businessNameField');
+                if (career === 'business') {
+                    businessField.style.display = 'block';
+                    document.getElementById('businessName').required = true;
+                } else {
+                    businessField.style.display = 'none';
+                    document.getElementById('businessName').required = false;
+                }
+            }
+
+            // Handle Sign Up
+            function handleSignup(event) {
+                event.preventDefault();
+
+                const loading = document.getElementById('loading');
+                const button = event.target.querySelector('button');
+                const successMessage = document.getElementById('successMessage');
+
+                loading.style.display = 'block';
+                button.disabled = true;
+
+                const email = document.getElementById('signupEmail').value;
+                const password = document.getElementById('signupPassword').value;
+                const confirmPassword = document.getElementById('confirmPassword').value;
+
+                if (password !== confirmPassword) {
+                    alert("Ijambo ry'ibanga ntirihura n'uko wemeje!");
+                    loading.style.display = 'none';
+                    button.disabled = false;
+                    return;
+                }
+
+                const userData = {
+                    name: document.getElementById('signupName').value,
+                    career: document.getElementById('career').value,
+                    address: document.getElementById('address').value,
+                    country: document.getElementById('country').value,
+                    region: document.getElementById('region').value,
+                    businessName: document.getElementById('career').value === 'business' ? document.getElementById('businessName').value : ''
+                };
+
+                createUserWithEmailAndPassword(auth, email, password)
+                    .then((userCredential) => {
+                        const user = userCredential.user;
+
+                        // Store additional user data in Firestore
+                        return setDoc(doc(db, "users", user.uid), userData);
+                    })
+                    .then(() => {
+                        loading.style.display = 'none';
+                        button.disabled = false;
+
+                        successMessage.innerHTML = '<h4 class="text-success">Access granted! You can use the AI</h4>';
+                        successMessage.classList.add('show');
+
+                        localStorage.setItem('isLoggedIn', 'true');
+                        document.getElementById('chatButton').style.display = 'block';
+                        document.getElementById('signupFormData').reset();
+                        document.getElementById('section_auth').classList.add('logged-in');
+                    })
+                    .catch((error) => {
+                        loading.style.display = 'none';
+                        button.disabled = false;
+                        alert('Hari ikosa: ' + error.message);
+                    });
+            }
+
+            // Handle Login
+            function handleLogin(event) {
+                event.preventDefault();
+
+                const loading = document.getElementById('loginLoading');
+                const button = event.target.querySelector('button');
+                const successMessage = document.getElementById('loginSuccessMessage');
+
+                loading.style.display = 'block';
+                button.disabled = true;
+
+                const email = document.getElementById('loginEmail').value;
+                const password = document.getElementById('loginPassword').value;
+
+                signInWithEmailAndPassword(auth, email, password)
+                    .then((userCredential) => {
+                        loading.style.display = 'none';
+                        button.disabled = false;
+
+                        successMessage.innerHTML = '<h4 class="text-success">You are logged in! You can use the AI</h4>';
+                        successMessage.classList.add('show');
+
+                        localStorage.setItem('isLoggedIn', 'true');
+                        document.getElementById('chatButton').style.display = 'block';
+                        document.getElementById('loginFormData').reset();
+                        document.getElementById('section_auth').classList.add('logged-in');
+                    })
+                    .catch((error) => {
+                        loading.style.display = 'none';
+                        button.disabled = false;
+                        alert('Hari ikosa: ' + error.message);
+                    });
+            }
+
+            // Check login status on page load
+            if (localStorage.getItem('isLoggedIn') === 'true') {
+                document.getElementById('chatButton').style.display = 'block';
+                document.getElementById('section_auth').classList.add('logged-in');
+            }
+
+            // Glowing Button Click Handler - opens in same tab
+            document.getElementById('chatButton').addEventListener('click', function() {
+                window.location.href = 'https://cdn.botpress.cloud/webchat/v2.3/shareable.html?configUrl=https://files.bpcontent.cloud/2025/04/10/13/20250410135131-W9MO8CFJ.json';
+            });
+
+            // Language Switching
+            let currentLang = 'rw';
+
+            function changeLanguage(lang) {
+                currentLang = lang;
+                document.querySelector('.lang-text').textContent = lang === 'rw' ? 'Kinyarwanda' : 'English';
+            }
+
+            // Make functions available globally
+            window.showTab = showTab;
+            window.toggleBusinessFields = toggleBusinessFields;
+            window.handleSignup = handleSignup;
+            window.handleLogin = handleLogin;
+            window.changeLanguage = changeLanguage;
+        }
+    </script>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

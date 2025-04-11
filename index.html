@@ -1,0 +1,461 @@
+<!DOCTYPE html>
+<html lang="rw">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Inzobere AI</title>
+    <!-- Favicon -->
+    <link rel="icon" type="image/png" href="https://i.ibb.co/S4gjrG5F/Untitled-design-removebg-preview-1.png">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Ubuntu:wght@300;400;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Ubuntu', sans-serif;
+            margin: 0;
+            padding: 0;
+        }
+        /* Navbar */
+        .navbar {
+            background: #FFFFFF;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            padding: 10px 0;
+        }
+        .navbar-brand img {
+            height: 48px;
+        }
+        .navbar-brand .logotext {
+            font-size: 18px;
+            font-weight: 700;
+            color: #000;
+            margin-left: 10px;
+        }
+        .nav-link {
+            color: #666 !important;
+            font-size: 16px;
+            margin: 0 15px;
+            text-transform: uppercase;
+        }
+        .nav-link.active {
+            color: #005260 !important;
+        }
+        .nav-item.dropdown .nav-link {
+            color: #666 !important;
+        }
+        .nav-item .gov_link {
+            color: #005260 !important;
+        }
+        /* Hero Section with Slideshow */
+        #section_landing {
+            position: relative;
+            min-height: 500px;
+            display: flex;
+            align-items: center;
+            color: #FFFFFF;
+            overflow: hidden;
+        }
+        .slideshow {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 1;
+        }
+        .slide {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-size: cover;
+            background-position: center;
+            opacity: 0;
+            transition: opacity 1s ease-in-out;
+        }
+        .slide:nth-child(1) {
+            background-image: url('https://i.pinimg.com/736x/88/dc/49/88dc49dbcfc2ebc7837c72510e1f36ce.jpg');
+            animation: slideShow 200s infinite;
+        }
+        .slide:nth-child(2) {
+            background-image: url('https://i.pinimg.com/736x/87/61/e7/8761e78a47397c2728a4761b25198b09.jpg');
+            animation: slideShow 200s infinite;
+            animation-delay: 50s;
+        }
+        .slide:nth-child(3) {
+            background-image: url('https://i.pinimg.com/736x/59/73/e0/5973e099147f06a5a14dbb3846fab840.jpg');
+            animation: slideShow 200s infinite;
+            animation-delay: 100s;
+        }
+        .slide:nth-child(4) {
+            background-image: url('https://i.pinimg.com/736x/a0/9c/7a/a09c7ac658db8a3e64791e43c08c06e9.jpg');
+            animation: slideShow 200s infinite;
+            animation-delay: 150s;
+        }
+        @keyframes slideShow {
+            0% { opacity: 0; }
+            2% { opacity: 1; }
+            23% { opacity: 1; }
+            25% { opacity: 0; }
+            100% { opacity: 0; }
+        }
+        .gradient-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(rgba(0, 0, 0, 0), rgba(0, 0, 0, 0.9));
+            z-index: 2;
+        }
+        .hero-content {
+            position: relative;
+            z-index: 3;
+        }
+        .txt_head {
+            font-size: 16px;
+            text-transform: uppercase;
+            margin-bottom: 16px;
+            font-weight: 400;
+        }
+        .txt_title {
+            font-size: 36px;
+            font-weight: 300;
+            margin-bottom: 32px;
+        }
+        .btn_section_landing {
+            background: #005260;
+            color: #FFFFFF;
+            border: none;
+            padding: 10px 20px;
+            font-size: 16px;
+            text-transform: uppercase;
+        }
+        .btn_section_landing:hover {
+            background: #003d4a;
+        }
+        /* Features Section */
+        #section_programs {
+            padding: 32px 0;
+        }
+        .card_white {
+            background: #FFFFFF;
+            padding: 32px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            height: 100%;
+        }
+        .txt_subtitle {
+            font-size: 20px;
+            font-weight: 700;
+            color: #000;
+            margin-bottom: 16px;
+        }
+        .txt_content {
+            font-size: 16px;
+            color: #666;
+            margin-bottom: 16px;
+            line-height: 1.5;
+        }
+        .btn_link {
+            color: #005260;
+            font-size: 16px;
+            text-decoration: none;
+        }
+        .btn_link:hover {
+            text-decoration: underline;
+        }
+        .fas.fa-tag {
+            color: #005260;
+            font-size: 24px;
+            margin-bottom: 32px;
+        }
+        /* Last Updates Section */
+        #section_updates {
+            background: #F5F5F5;
+            padding: 32px 0;
+        }
+        .update-box {
+            background: #FFFFFF;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+        }
+        .update-box:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            border: 1px solid #4CAF50;
+        }
+        .update-box img {
+            width: 350px;
+            height: 238px;
+            object-fit: cover;
+            transition: transform 0.3s ease;
+        }
+        .update-box:hover img {
+            transform: scale(1.05);
+        }
+        .txt_info {
+            font-size: 14px;
+            color: #666;
+            margin-bottom: 16px;
+        }
+        /* Partners Section */
+        #section_partners {
+            padding: 32px 0;
+        }
+        .card_partner {
+            background: #FFFFFF;
+            padding: 16px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            text-align: center;
+        }
+        .card_partner img {
+            height: 60px;
+            margin-bottom: 8px;
+        }
+        .card_partner hr {
+            margin: 8px 0;
+        }
+        /* Footer */
+        #section_footer {
+            background: #005260;
+            color: #FFFFFF;
+            padding: 32px 0;
+            border-radius: 0; /* Sharp edges */
+        }
+        #section_footer a {
+            color: #FFFFFF;
+            text-decoration: none;
+        }
+        #section_footer a:hover {
+            text-decoration: underline;
+        }
+        .footer-left {
+            text-align: left;
+        }
+        .footer-right {
+            text-align: right;
+        }
+        .banner-ad {
+            display: inline-block;
+            transition: all 0.3s ease;
+            border-radius: 0; /* Sharp edges */
+        }
+        .banner-ad:hover {
+            transform: scale(1.05);
+            box-shadow: 0 0 15px #00FFFF, 0 0 30px #00FFFF; /* Neon glow */
+            border: 2px solid transparent;
+            border-image: linear-gradient(45deg, #00FFFF, #FF00FF) 1; /* Gradient border */
+            animation: borderShift 2s infinite linear;
+        }
+        @keyframes borderShift {
+            0% { border-image: linear-gradient(45deg, #00FFFF, #FF00FF) 1; }
+            50% { border-image: linear-gradient(45deg, #FF00FF, #00FFFF) 1; }
+            100% { border-image: linear-gradient(45deg, #00FFFF, #FF00FF) 1; }
+        }
+    </style>
+</head>
+<body>
+    <!-- Navbar -->
+    <nav class="navbar sticky-top navbar-expand-lg">
+        <div class="container">
+            <a href="index.html" class="navbar-brand">
+                <img src="https://i.ibb.co/S4gjrG5F/Untitled-design-removebg-preview-1.png" alt="Inzobere AI Logo">
+            </a>
+            <a href="index.html" class="navbar-brand logotext">INZOBERE AI</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                <ul class="navbar-nav mx-auto">
+                    <li class="nav-item">
+                        <a class="nav-link active" href="/">Ahabanza</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="about.html">Ibyerekeye</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="contact.html">Twandikire</a>
+                    </li>
+                </ul>
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown">
+                            <span class="lang-text">Kinyarwanda</span>
+                        </a>
+                        <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+                            <li><a class="dropdown-item" href="#" onclick="changeLanguage('rw')">Kinyarwanda</a></li>
+                            <li><a class="dropdown-item" href="#" onclick="changeLanguage('en')">English</a></li>
+                        </ul>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link txt_black">|</a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="https://wa.me/+250788123456" target="_blank" class="nav-link gov_link">WhatsApp</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section with Slideshow -->
+    <div class="container-fluid d-flex" id="section_landing">
+        <div class="slideshow">
+            <div class="slide"></div>
+            <div class="slide"></div>
+            <div class="slide"></div>
+            <div class="slide"></div>
+        </div>
+        <div class="gradient-overlay"></div>
+        <div class="container align-self-center hero-content">
+            <div class="col-12 col-lg-6 col-md-6 col-sm-8">
+                <p class="txt_head">INZOBERE AI</p>
+                <p class="txt_title">Umufasha wawe mu buhinzi n’ubucuruzi.</p>
+                <a href="start.html" class="btn btn_section_landing">Tangira nonaha</a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Features Section -->
+    <div class="container-fluid" id="section_programs">
+        <div class="container">
+            <div class="row mabo32">
+                <div class="col-lg-12 col-md-12 col-sm-12 col-12 mato32">
+                    <div class="row">
+                        <div class="col-lg-4 col-md-4 col-sm-12 col-12 mabo32">
+                            <div class="col-12 card_white text-left">
+                                <i class="fas fa-tag"></i>
+                                <div>
+                                    <h3 class="txt_subtitle">Ubuhinzi</h3>
+                                    <div class="txt_content text-justify">
+                                        Inzobere AI igufasha kumeza ibihigwa byawe neza, ikugira inama z'uburyo bugezweho mu mwuga wo guhinga.
+                                    </div>
+                                    <a class="btn btn_link" href="about.html">Soma byinshi →</a>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-4 col-md-4 col-sm-12 col-12 mabo32">
+                            <div class="col-12 card_white text-left">
+                                <i class="fas fa-tag"></i>
+                                <div>
+                                    <h3 class="txt_subtitle">Ubucuruzi</h3>
+                                    <div class="txt_content text-justify">
+                                        Menya amakuru y’isoko hano mu Rwanda. Inzobere igufasha gukomeza umushinga wawe w’ubucuruzi.
+                                    </div>
+                                    <a class="btn btn_link" href="about.html">Soma byinshi →</a>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-4 col-md-4 col-sm-12 col-12 mabo32">
+                            <div class="col-12 card_white text-left">
+                                <i class="fas fa-tag"></i>
+                                <div>
+                                    <h3 class="txt_subtitle">Umufasha w’ubumenyi</h3>
+                                    <div class="txt_content text-justify">
+                                        Baza Inzobere ibibazo byawe mu Kinyarwanda, wongere ubumenyi vuba mu buhinzi n’ubucuruzi.
+                                    </div>
+                                    <a class="btn btn_link" href="about.html">Soma byinshi →</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Last Updates Section -->
+    <div class="container-fluid" id="section_updates">
+        <div class="container">
+            <div class="row mabo32">
+                <div class="col-12">
+                    <p class="txt_title txt_black mabo32">Amakuru Mashya</p>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-12 update-box d-flex flex-column flex-md-row">
+                    <div class="boximg">
+                        <a href="about.html">
+                            <img src="https://i.pinimg.com/736x/42/2c/ac/422cacbff94eb35d59b19c205e912536.jpg" alt="Brain Update">
+                        </a>
+                    </div>
+                    <div class="p-4 flex-grow-1">
+                        <div class="txt_info">Friday, 10 April, 2025</div>
+                        <a href="about.html">
+                            <h3 class="txt_content txt_black fnt_black mabo16 text-uppercase">
+                                IMPAMYABUMENYI Y'INZOBERE AI YONGEWE 
+                            </h3>
+                        </a>
+                        <div class="txt_content txt_grey text-justify mabo16">
+                            Ubu Inzobere AI ifite impamyabumenyi igana na 1/3 ku buhinzi,ubworozi n'ubucuruzi bubera mu Rwanda hose.
+                        </div>
+                        <a class="btn btn_link" href="about.html">Soma byinshi →</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Partners Section -->
+    <div class="container-fluid" id="section_partners">
+        <div class="container">
+            <div class="col-12">
+                <p class="txt_title txt_black">Abafatanyabikorwa</p>
+                <p class="txt_content txt_grey mabo32">Inzobere AI ifatanya n’ibigo by’ingenzi kugirango itange serivisi z’ubwiza mu buhinzi n’ubucuruzi.</p>
+            </div>
+            <div class="row justify-content-center">
+                <div class="col-12 col-lg-3 col-md-4 col-sm-6 mabo32">
+                    <div class="card_partner">
+                        <img src="https://creativedestructionlab.com/wp-content/uploads/2020/06/Botpress_alumni.png" alt="Botpress">
+                        <hr>
+                        <p class="txt_subtitle txt_black">Botpress</p>
+                        <p class="txt_content txt_grey mato16">Umufatanyabikorwa mu ikoranabuhanga ry’AI</p>
+                        <a href="https://botpress.com" target="_blank" class="btn btn_link">Sura →</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <div class="container-fluid" id="section_footer">
+        <div class="container">
+            <div class="row align-items-center">
+                <div class="col-12 col-md-6 footer-left">
+                    <p class="txt_title txt_white fnt_black mabo32">Twandikire</p>
+                    <p class="txt_content txt_white">
+                        <i class="fas fa-phone mr-3"></i>
+                        <a href="tel:+250795065789">+250 795065789</a>
+                    </p>
+                    <p class="txt_content txt_white">
+                        <i class="fas fa-envelope-open mr-3"></i>
+                        <a href="mailto:mkbertrand123@gmail.com">mkbertrand123@gmail.com</a>
+                    </p>
+                </div>
+                <div class="col-12 col-md-6 footer-right">
+                    <!-- ExoClick Embed Code -->
+                    <a href="https://www.exoclick.com/signup/?login=exo543" class="banner-ad">
+                        <img src="https://www.exoclick.com/banners/468x120.gif" border="0" alt="ExoClick Banner">
+                    </a>
+                </div>
+            </div>
+            <hr>
+            <p class="txt_info txt_white text-center">© 2025 Inzobere AI. Uburenganzira bwose burabitswe.</p>
+        </div>
+    </div>
+
+    <!-- JavaScript for Language Switching -->
+    <script>
+        // Language Switching
+        let currentLang = 'rw';
+
+        function changeLanguage(lang) {
+            currentLang = lang;
+            document.querySelector('.lang-text').textContent = lang === 'rw' ? 'Kinyarwanda' : 'English';
+            // Update other elements if needed in the future
+        }
+    </script>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
